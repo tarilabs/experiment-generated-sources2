@@ -32,7 +32,11 @@
   <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-ci</artifactId>
+        <artifactId>kie-api</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
         <scope>test</scope>
       </dependency>
     <dependency>
@@ -92,8 +96,22 @@
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>build-helper-maven-plugin</artifactId>
     <executions>
+        <!-- During Maven project init, add DRLX as a source directory (this is OPTIONAL) -->
         <execution>
-            <id>add-source</id>
+            <id>add-drlx-as-source</id>
+            <phase>initialize</phase>
+            <goals>
+                <goal>add-source</goal>
+            </goals>
+            <configuration>
+                <sources>
+                    <source>${project.basedir}/src/main/drlx/</source>
+                </sources>
+            </configuration>
+        </execution>
+        <!-- After DRLX compiler code generation, add generated-source directories (this is MANDATORY) -->
+        <execution>
+            <id>add-drlx-generated-source</id>
             <phase>generate-sources</phase>
             <goals>
                 <goal>add-source</goal>
@@ -104,8 +122,9 @@
                 </sources>
             </configuration>
         </execution>
+        <!-- After DRLX compiler code generation, add generated-resource directories (this is MANDATORY) -->
         <execution>
-            <id>add-resource</id>
+            <id>add-drlx-generated-resource</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>add-resource</goal>
@@ -119,14 +138,14 @@
             </configuration>
           </execution>
     </executions>
- </plugin>
+    </plugin>
      <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
         <version>${drools-version}</version>
         <extensions>true</extensions>
       </plugin>
-    </plugins>
+  </plugins>
 
     <pluginManagement>
       <plugins>
